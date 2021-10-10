@@ -1,11 +1,5 @@
 version: "3.9"
 services:
-  db:
-    image: nouchka/sqlite3:latest
-    volumes:
-      - sqlite3-data:/root/db
-    stdin_open: true
-    tty: true
   web:
     build:
       context: .
@@ -18,9 +12,6 @@ services:
       - web-node-modules:/home/app/myapp/node_modules
     ports:
       - 3000:3000
-    depends_on:
-      - db
 
 volumes:
-  sqlite3-data:
   web-node-modules:

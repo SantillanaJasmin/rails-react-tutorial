@@ -16,6 +16,7 @@ WORKDIR /home/app/myapp
 COPY Gemfile Gemfile.lock /home/app/myapp/
 RUN bundle install
 
+COPY . /home/app/myapp
 RUN chown -R app:app /home/app
 
 # Add a script to be executed every time the container starts.
