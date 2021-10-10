@@ -1,4 +1,6 @@
 class Api::V1::BeersController < ApplicationController
+  skip_before_action :verify_authenticity_token
+
   before_action :set_beer, only: %i[ show edit update destroy ]
 
   # GET /beers or /beers.json
@@ -21,10 +23,6 @@ class Api::V1::BeersController < ApplicationController
     @beer = Beer.new
   end
 
-  # GET /beers/1/edit
-  def edit
-  end
-
   # POST /beers or /beers.json
   def create
     @beer = Beer.new(beer_params)
@@ -38,6 +36,11 @@ class Api::V1::BeersController < ApplicationController
 
   # PATCH/PUT /beers/1 or /beers/1.json
   def update
+    if @beer.update_attributes(beer_params)
+      render json: @beer
+    else
+      render json: @beer.errors
+    end
   end
 
   # DELETE /beers/1 or /beers/1.json
