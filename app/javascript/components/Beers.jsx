@@ -1,6 +1,7 @@
-import { Table, message, Popconfirm } from "antd";
 import React from "react";
-import AddBeerModal from "./AddBeerModal";
+import { Table, message, Popconfirm } from "antd";
+
+import BeerModalToggle from "./BeerModalToggle";
 
 class Beers extends React.Component {
   columns = [
@@ -28,6 +29,13 @@ class Beers extends React.Component {
       title: "",
       key: "action",
       render: (_text, record) => (
+        <BeerModalToggle beer={record} header="Edit Beer" label="Edit" method="put" url={"api/v1/beers/update?id=" + record.id} reloadBeers={this.reloadBeers} />
+      ),
+    },
+    {
+      title: "",
+      key: "action",
+      render: (_text, record) => (
         <Popconfirm title="Are you sure to delete this beer?" onConfirm={() => this.deleteBeer(record.id)} okText="Yes" cancelText="No">
           <a href="#" type="danger">
             Delete{" "}
@@ -38,7 +46,7 @@ class Beers extends React.Component {
   ];
 
   state = {
-    beers: [],
+    beers: []
   };
 
   componentDidMount() {
@@ -99,7 +107,7 @@ class Beers extends React.Component {
       <>
         <Table className="table-striped-rows" dataSource={this.state.beers} columns={this.columns} pagination={{ pageSize: 5 }} />
 
-        <AddBeerModal reloadBeers={this.reloadBeers} />
+        <BeerModalToggle beer={{}} header="Add Beer" label="Add Beer" method="post" url="api/v1/beers/create" reloadBeers={this.reloadBeers} />
       </>
     );
   }

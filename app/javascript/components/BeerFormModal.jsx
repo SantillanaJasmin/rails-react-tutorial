@@ -1,19 +1,21 @@
-import { Button, Form, Input, Modal, Select } from "antd";
 import React from "react";
+import { Button, Form, Input, Modal, Select } from "antd";
 
+const { Item } = Form;
 const { Option } = Select;
 
-class AddBeerModal extends React.Component {
+class BeerFormModal extends React.Component {
   formRef = React.createRef();
-  state = {
-    visible: false,
-  };
+
+  handleCancel = () => {
+    this.props.toggleVisibility();
+  }
 
   onFinish = (values) => {
-    const url = "api/v1/beers/";
-    fetch(url, {
-      method: "post",
+    fetch(this.props.url, {
+      method: this.props.method,
       headers: {
+        "Authorization": "Basic " + btoa('username:password'),
         "Content-Type": "application/json",
       },
       body: JSON.stringify(values),
@@ -32,36 +34,30 @@ class AddBeerModal extends React.Component {
       .catch((err) => console.error("Error: " + err));
   };
 
-  showModal = () => {
-    this.setState({
-      visible: true,
-    });
-  };
-
-  handleCancel = () => {
-    this.setState({
-      visible: false,
-    });
-  };
-
   render() {
+    let { header, visible } = this.props;
+    let { brand, country, quantity, style} = this.props.beer;
+
+    var initialValues = {
+      brand: brand,
+      country: country,
+      quantity: quantity,
+      style: style
+    };
+
     return (
       <>
-        <Button type="primary" onClick={this.showModal}>
-          Create New +
-        </Button>
-
-        <Modal title="Add New Beer ..." visible={this.state.visible} onCancel={this.handleCancel} footer={null}>
-          <Form ref={this.formRef} layout="vertical" onFinish={this.onFinish}>
-            <Form.Item name="brand" label="Brand" rules={[{ required: true, message: "Please input your beer brand!" }]}>
+        <Modal title={header} visible={visible} onCancel={this.handleCancel} footer={null}>
+          <Form ref={this.formRef} layout="vertical" initialValues={initialValues} onFinish={this.onFinish}>
+            <Item name="brand" label="Brand" rules={[{ required: true, message: "Please input your beer brand!" }]}>
               <Input placeholder="Input your beer brand" />
-            </Form.Item>
-
-            <Form.Item name="style" label="Style" rules={[{ required: true, message: "Please input your beer style!" }]}>
+            </Item>
+    
+            <Item name="style" label="Style" rules={[{ required: true, message: "Please input your beer style!" }]}>
               <Input placeholder="Input your beer style" />
-            </Form.Item>
-
-            <Form.Item
+            </Item>
+    
+            <Item
               name="country"
               label="Country"
               rules={[
@@ -79,17 +75,17 @@ class AddBeerModal extends React.Component {
                 <Option value="USA">USA</Option>
                 <Option value="Other">Other</Option>
               </Select>
-            </Form.Item>
-
-            <Form.Item name="quantity" label="Quantity" rules={[{ required: true, message: "Please input the quantity!" }]}>
+            </Item>
+    
+            <Item name="quantity" label="Quantity" rules={[{ required: true, message: "Please input the quantity!" }]}>
               <Input type="number" placeholder="How many beers you desire?" />
-            </Form.Item>
-
-            <Form.Item>
+            </Item>
+    
+            <Item>
               <Button type="primary" htmlType="submit">
                 Submit
               </Button>
-            </Form.Item>
+            </Item>
           </Form>
         </Modal>
       </>
@@ -97,4 +93,4 @@ class AddBeerModal extends React.Component {
   }
 }
 
-export default AddBeerModal;
+export default BeerFormModal;
